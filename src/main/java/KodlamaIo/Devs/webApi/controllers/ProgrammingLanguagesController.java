@@ -5,48 +5,49 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import KodlamaIo.Devs.business.abstracts.ProgrammingLanguageService;
-import KodlamaIo.Devs.entities.concretes.ProgrammingLanguage;
+import KodlamaIo.Devs.business.concretes.ProgrammingLanguageManager;
+import KodlamaIo.Devs.business.requests.CreateProgrammingLanguageRequest;
+import KodlamaIo.Devs.business.responses.ProgrammingLanguageResponse;
 
 @RestController
 @RequestMapping("/api/programminglanguages")
 public class ProgrammingLanguagesController {
-	private ProgrammingLanguageService programmingLanguageService;
+	private final ProgrammingLanguageManager languageManager;
 
 	@Autowired
-	public ProgrammingLanguagesController(ProgrammingLanguageService programmingLanguageService) {
-		this.programmingLanguageService = programmingLanguageService;
+	public ProgrammingLanguagesController(ProgrammingLanguageManager programmingLanguageManager) {
+		this.languageManager = programmingLanguageManager;
 	}
 	
 	@PostMapping("/add")
-	public void add(@RequestBody ProgrammingLanguage programmingLanguage) throws Exception {
-		programmingLanguageService.add(programmingLanguage);
+	public void add(@RequestBody CreateProgrammingLanguageRequest languageRequest) throws Exception {
+		languageManager.add(languageRequest);
 	}
 	
-	@DeleteMapping("/delete")
-	public void delete(@RequestParam int id) throws Exception {
-		programmingLanguageService.delete(id);
+	@DeleteMapping("/delete/{id}")
+	public void delete(@PathVariable int id) throws Exception {
+		languageManager.delete(id);
 	}
 	
-	@PutMapping("/update")
-	public void update(@RequestBody ProgrammingLanguage programmingLanguage) throws Exception {
-		programmingLanguageService.update(programmingLanguage);
+	@PutMapping("/update/{id}")
+	public void update(@RequestBody CreateProgrammingLanguageRequest languageRequest, @PathVariable int id) throws Exception {
+		languageManager.update(id, languageRequest);
 	}
 	
 	@GetMapping("/getall")
-	public List<ProgrammingLanguage> getAll(){
-		return programmingLanguageService.getAll();
+	public List<ProgrammingLanguageResponse> getAll(){
+		return languageManager.getAll();
 	}
 	
-	@GetMapping("getbyid")
-	public ProgrammingLanguage getById(int id) {
-		return programmingLanguageService.getProgrammingLanguageById(id);
+	@GetMapping("/getbyid")
+	public ProgrammingLanguageResponse getById(@PathVariable int id) {
+		return languageManager.getById(id);
 	}
 }
